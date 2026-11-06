@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Melek AI 🌸 Tarsus Üniversitesi Çocuk Gelişimi</title>
+    <!-- iOS Web App Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Melek AI">
+    <meta name="theme-color" content="#f472b6">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pastelPink: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            200: '#fecdd3',
+                            300: '#fda4af',
+                            400: '#fb7185',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                        },
+                        candyPink: '#f472b6',
+                        roseSoft: '#fbcfe8',
+                        dreamBg: '#fff5f7'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            background-color: #fff5f7;
+            touch-action: manipulation;
+        }
+        .app-shadow {
+            box-shadow: 0 10px 25px -5px rgba(244, 114, 182, 0.25), 0 8px 10px -6px rgba(244, 114, 182, 0.2);
+        }
+        .soft-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(254, 205, 211, 0.6);
+        }
+        /* Laser scanning animation */
+        @keyframes scanLaser {
+            0% { top: 0%; opacity: 0.8; }
+            50% { top: 92%; opacity: 1; }
+            100% { top: 0%; opacity: 0.8; }
+        }
+        .laser-line {
+            animation: scanLaser 2s ease-in-out infinite;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #fbcfe8;
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col text-slate-800 antialiased select-none pb-20">
+
+    <!-- Top Status / Header -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-pink-100 px-4 pt-3 pb-3">
+        <div class="max-w-md mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-2.5">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pink-400 to-rose-300 flex items-center justify-center text-white shadow-md shadow-pink-200">
+                    <i class="fa-solid fa-graduation-cap text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-base font-bold text-pink-600 flex items-center gap-1.5 leading-tight">
+                        Melek AI 🌸
+                    </h1>
+                    <p class="text-xs text-rose-400 font-semibold leading-tight">
+                        Tarsus Üni • Çocuk Gelişimi
+                    </p>
+                </div>
+            </div>
+
+            <!-- Target Goal Badge -->
+            <div class="flex items-center gap-1.5">
+                <button onclick="toggleApiKeyModal()" title="Gemini API Anahtarı Ayarları" class="w-8 h-8 rounded-full bg-pink-100 hover:bg-pink-200 text-pink-600 flex items-center justify-center text-xs shadow-sm transition-transform active:scale-90">
+                    <i class="fa-solid fa-key"></i>
+                </button>
+                <div class="bg-pink-50 border border-pink-200/80 px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
+                    <span class="text-xs">🎯</span>
+                    <span class="text-xs font-bold text-pink-700">Hedef: 55 Net</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Gemini API Key Modal -->
+    <div id="apiKeyModal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="soft-card w-full max-w-sm rounded-3xl p-5 border border-pink-200 app-shadow bg-white text-slate-800 space-y-3">
+            <div class="flex items-center justify-between border-b border-pink-100 pb-2">
+                <h3 class="text-sm font-bold text-pink-700 flex items-center gap-1.5">
+                    <i class="fa-solid fa-brain"></i> Gemini API Anahtarı
+                </h3>
+                <button onclick="toggleApiKeyModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <p class="text-xs text-slate-500 leading-relaxed">
+                Yapay zekanın soruları canlı çözebilmesi için Google AI Studio'dan (<a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-pink-600 underline font-semibold">aistudio.google.com</a>) alacağınız ücretsiz API anahtarını buraya yapıştırın. Anahtar sadece cihazınızda saklanır.
+            </p>
+            <div>
+                <input type="password" id="geminiApiKeyInput" placeholder="AIzaSy..." class="w-full text-xs p-2.5 rounded-xl border border-pink-200 focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/50">
+            </div>
+            <div class="flex gap-2 pt-1">
+                <button onclick="saveApiKey()" class="flex-1 bg-gradient-to-r from-pink-500 to-rose-400 text-white font-bold py-2 rounded-xl text-xs shadow-md shadow-pink-200 active:scale-95">
+                    Kaydet ✨
+                </button>
+                <button onclick="clearApiKey()" class="px-3 bg-rose-50 text-rose-600 font-bold py-2 rounded-xl text-xs">
+                    Temizle
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- iOS Add to Home Screen Banner (Dismissible) -->
+    <div id="iosInstallBanner" class="max-w-md mx-auto w-full px-4 pt-2.5">
+        <div class="bg-gradient-to-r from-pink-500 to-rose-400 text-white rounded-2xl p-3 shadow-md flex items-center justify-between gap-2 text-xs">
+            <div class="flex items-center gap-2.5">
+                <div class="bg-white/20 p-2 rounded-xl text-center">
+                    <i class="fa-solid fa-mobile-screen-button text-sm"></i>
+                </div>
+                <div class="leading-tight">
+                    <p class="font-bold">Uygulama Olarak Kullan! ✨</p>
+                    <p class="text-pink-100 text-[11px]">Safari'de <strong>Paylaş</strong> <i class="fa-solid fa-arrow-up-from-bracket mx-0.5"></i> → <strong>Ana Ekrana Ekle</strong></p>
+                </div>
+            </div>
+            <button onclick="dismissBanner()" class="text-white/80 hover:text-white p-1">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-md mx-auto w-full px-4 pt-3 overflow-y-auto">
+
+        <!-- ================= TAB 1: KAMERA İLE SORU ÇÖZ ================= -->
+        <section id="tab-solver" class="space-y-4">
+            <!-- Camera / Upload Trigger Card -->
+            <div class="soft-card rounded-3xl p-5 text-center app-shadow border border-pink-200/60 relative overflow-hidden">
+                <div class="absolute -right-6 -bottom-6 w-28 h-28 bg-pink-100 rounded-full blur-2xl opacity-70 pointer-events-none"></div>
+
+                <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-gradient-to-tr from-pink-400 to-rose-300 text-white flex items-center justify-center text-2xl shadow-lg shadow-pink-300/40">
+                    <i class="fa-solid fa-camera"></i>
+                </div>
+                <h2 class="text-lg font-bold text-slate-800">Sorunun Fotoğrafını Çek</h2>
+                <p class="text-xs text-slate-500 mt-1 mb-4">Melek takıldığın soruyu kameranla çek, yapay zeka hemen adım adım çözsün! 🌸</p>
+
+                <!-- Hidden inputs for Camera and File upload -->
+                <input type="file" id="cameraInput" accept="image/*" capture="environment" class="hidden" onchange="handleImageSelected(event)">
+                <input type="file" id="galleryInput" accept="image/*" class="hidden" onchange="handleImageSelected(event)">
+
+                <div class="grid grid-cols-2 gap-2.5">
+                    <button onclick="document.getElementById('cameraInput').click()" class="bg-gradient-to-r from-pink-500 to-rose-400 hover:from-pink-600 hover:to-rose-500 text-white font-bold py-2.5 px-3 rounded-2xl text-xs flex items-center justify-center gap-2 shadow-md shadow-pink-200 active:scale-95 transition-all">
+                        <i class="fa-solid fa-camera text-sm"></i>
+                        <span>Kamerayı Aç</span>
+                    </button>
+                    <button onclick="document.getElementById('galleryInput').click()" class="bg-pink-100 hover:bg-pink-200 text-pink-700 font-bold py-2.5 px-3 rounded-2xl text-xs flex items-center justify-center gap-2 active:scale-95 transition-all">
+                        <i class="fa-regular fa-image text-sm"></i>
+                        <span>Galeriden Seç</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Image Scanning & AI Processing Box -->
+            <div id="scanningContainer" class="hidden soft-card rounded-3xl p-4 border border-pink-200 app-shadow text-center">
+                <div class="relative rounded-2xl overflow-hidden max-h-64 bg-slate-900 mx-auto shadow-inner">
+                    <img id="previewImage" src="" alt="Soru Önizleme" class="w-full object-contain max-h-64 mx-auto opacity-85">
+                    <!-- Laser Scanner -->
+                    <div id="laserBar" class="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-pink-400 to-transparent shadow-[0_0_15px_#f43f5e] laser-line"></div>
+                </div>
+                <div class="mt-3 flex items-center justify-center gap-2 text-pink-600 text-xs font-bold animate-pulse">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span>Yapay Zeka Soruyu Okuyor & Çözüyor...</span>
+                </div>
+            </div>
+
+            <!-- AI Solution Result Card -->
+            <div id="solutionContainer" class="hidden soft-card rounded-3xl p-5 border border-pink-300 app-shadow space-y-3">
+                <div class="flex items-center justify-between border-b border-pink-100 pb-2.5">
+                    <div class="flex items-center gap-2">
+                        <span class="w-7 h-7 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center text-xs font-bold">✨</span>
+                        <div>
+                            <span id="solutionSubjectTag" class="text-xs font-bold text-pink-600 uppercase tracking-wide">Yapay Zeka Çözümü</span>
+                            <h3 id="solutionAnswerTag" class="text-sm font-extrabold text-slate-800">Doğru Cevap Tespit Edildi</h3>
+                        </div>
+                    </div>
+                    <span class="bg-emerald-100 text-emerald-700 text-[11px] font-bold px-2 py-0.5 rounded-full">Gemini 1.5 Flash</span>
+                </div>
+
+                <!-- Step by Step (Dynamic Content) -->
+                <div id="solutionContentArea" class="text-xs text-slate-700 space-y-2.5 leading-relaxed bg-pink-50/50 p-3.5 rounded-2xl whitespace-pre-line">
+                    <!-- Dynamic text fills here -->
+                </div>
+
+                <!-- Encouragement Note for Melek -->
+                <div class="bg-gradient-to-r from-rose-100 to-pink-100 border border-pink-200 p-3 rounded-2xl flex items-start gap-2.5">
+                    <div class="text-lg">🌸</div>
+                    <div class="text-[11px] text-pink-800 leading-snug">
+                        <span class="font-bold">Aferin Melek!</span> Bu sorunun mantığını kavradığında Tarsus Çocuk Gelişimi hedefine 1 adım daha yaklaşmış olacaksın!
+                    </div>
+                </div>
+
+                <button onclick="resetSolver()" class="w-full bg-pink-100 hover:bg-pink-200 text-pink-700 font-bold py-2 rounded-xl text-xs transition-colors">
+                    Başka Bir Soru Çöz 📸
+                </button>
+            </div>
+
+            <!-- Quick Text Solver Fallback -->
+            <div class="soft-card rounded-3xl p-4 border border-pink-200/70">
+                <p class="text-xs font-bold text-slate-700 mb-2 flex items-center gap-1.5">
+                    <i class="fa-solid fa-keyboard text-pink-500"></i> Veya Soruyu Metin Olarak Yaz:
+                </p>
+                <textarea id="manualQuestionText" rows="2" placeholder="Sorunun metnini veya takıldığın yeri buraya yaz Melek..." class="w-full text-xs p-3 rounded-2xl border border-pink-200 focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/30 text-slate-700"></textarea>
+                <button onclick="solveManualText()" class="mt-2 w-full bg-gradient-to-r from-pink-400 to-rose-400 text-white font-bold py-2 rounded-xl text-xs shadow-sm active:scale-95 transition-transform">
+                    Soruyu Yapay Zekaya Çözdür ✨
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= TAB 2: HEDEF VE NET TAKİBİ ================= -->
+        <section id="tab-score" class="hidden space-y-4">
+            <!-- Target Card for Tarsus Cocuk Gelisimi -->
+            <div class="bg-gradient-to-br from-pink-500 via-rose-400 to-pink-400 text-white rounded-3xl p-5 shadow-lg shadow-pink-200 relative overflow-hidden">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="bg-white/20 backdrop-blur-md text-[11px] font-bold px-2.5 py-1 rounded-full uppercase">
+                            Ön Lisans • TYT Puanı
+                        </span>
+                        <h2 class="text-lg font-extrabold mt-2 leading-tight">Tarsus Üniversitesi</h2>
+                        <p class="text-sm text-pink-100 font-medium">Çocuk Gelişimi Programı</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-black" id="totalNetDisplay">55.25</div>
+                        <div class="text-[10px] text-pink-100">Hesaplanan Toplam Net</div>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="mt-4 pt-3 border-t border-white/20">
+                    <div class="flex justify-between text-xs font-bold mb-1.5">
+                        <span>Hedefe Ulaşma Oranı (Hedef: 55 Net)</span>
+                        <span id="targetPercentDisplay">%100</span>
+                    </div>
+                    <div class="w-full bg-black/20 h-3 rounded-full overflow-hidden p-0.5">
+                        <div id="targetProgressBar" class="bg-white h-full rounded-full transition-all duration-700" style="width: 100%;"></div>
+                    </div>
+                    <p class="text-[11px] text-pink-100 mt-2 font-medium" id="remainingNetText">
+                        🎉 <strong>Harikasın Melek!</strong> Tarsus Çocuk Gelişimi için gereken 55 Net barajını aştın! 🌸
+                    </p>
+                </div>
+            </div>
+
+            <!-- Subject Inputs: Doğru & Yanlış Otomatik Hesaplama -->
+            <div class="soft-card rounded-3xl p-4 sm:p-5 border border-pink-200/80 space-y-3">
+                <div class="flex items-center justify-between border-b border-pink-100 pb-2.5">
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-800">Doğru / Yanlış Net Girişi</h3>
+                        <p class="text-[10px] text-pink-500 font-medium">4 Yanlış 1 Doğruyu Götürür (Canlı Hesaplanır)</p>
+                    </div>
+                    <span class="text-xs bg-pink-100 text-pink-700 font-bold px-2 py-0.5 rounded-full">Canlı</span>
+                </div>
+
+                <!-- Türkçe (40 Soru) -->
+                <div class="p-2.5 rounded-2xl bg-pink-50/50 border border-pink-100">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <span class="font-bold text-xs text-slate-800 flex items-center gap-1">
+                            <span class="w-2 h-2 rounded-full bg-pink-500 inline-block"></span> Türkçe (40 Soru)
+                        </span>
+                        <span class="text-xs font-extrabold text-pink-600 bg-white px-2 py-0.5 rounded-lg border border-pink-200">
+                            Net: <span id="netTurkceText">27.00</span>
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div class="flex items-center gap-1.5 bg-white p-1.5 rounded-xl border border-pink-100">
+                            <span class="text-emerald-600 font-bold text-[11px]">D:</span>
+                            <input type="number" min="0" max="40" id="turkceD" value="28" oninput="calculateDYNet()" class="w-full text-center font-bold text-slate-700 focus:outline-none">
+                        </div>
+                        <div class="flex items-center gap-1.5 bg-white p-1.5 rounded-xl border border-pink-100">
+                            <span class="text-rose-500 font-bold text-[11px]">Y:</span>
+                            <input type="number" min="0" max="40" id="turkceY" value="4" oninput="calculateDYNet()" class="w-full text-center font-bold text-slate-700 focus:outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Matematik (40 Soru) -->
+                <div class="p-2.5 rounded-2xl bg-pink-50/50 border border-pink-100">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <span class="font-bold text-xs text-slate-800 flex items-center gap-1">
+                            <span class="w-2 h-2 rounded-full bg-rose-400 inline-block"></span> Temel Matematik (40 Soru)
+                        </span>
+                        <span class="text-xs font-extrabold text-pink-600 bg-white px-2 py-0.5 rounded-lg border border-pink-200">
+                            Net: <span id="netMatText">8.50</span>
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div class="flex items-center gap-1.5 bg-white p-1.5 rounded-xl border border-pink-100">
+                            <span class="text-emerald-600 font-bold text-[11px]">D:</span>
+                            <input type="number" min="0" max="40" id="matD" value="9" oninput="calculateDYNet()" class="w-full text-center font-bold text-slate-700 focus:outline-none">
+                        </div>
+                        <div class="flex items-center gap-1.5 bg-white p-1.5 rounded-xl border border-pink-100">
+                            <span class="text-rose-500 font-bold text-[11px]">Y:</span>
+                            <input type="number" min="0" max="40" id="matY" value="2" oninput="calculateDYNet()" class="w-full text-center font-bold text-slate-700 focus:outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sosyal (20 Soru) -->
+                <div class="p-2.5 rounded-2xl bg-pink-50/50 border border-pink-100">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <span class="font-bold text-xs text-slate-800 flex items-center gap-1">
+                            <span class="w-2 h-2 rounded-full bg-pink-400 inline-block"></span> Sosyal Bilimler (20 Soru)
+                        </span>
+                        <span class="text-xs font-extrabold text-pink-600 bg-white px-2 py-0.5 rounded-lg border border-pink-200">
+                            Net: <span id="netSosyalText">14.25</span>
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div class="flex items-center gap-1.5 bg-white p-1.5 rounded-xl border border-pink-100">
+                            <span class="text-emerald-600 font-bold text-[11px]">D:</span>
+                            <input type="number" min="0" max="20" id="sosyalD" value="15" oninput="calculateDYNet()" class="w-full text-center font-bold text-slate-700 focus:outline-none">
+                        </div>
+                        <div class="flex items-center gap-1.5 bg-white p-1.5 rounded-xl border border-pink-100">
+                            <span class="text-rose-500 font-bold text-[11px]">Y:</span>
+                            <input type="number" min="0" max="20" id="sosyalY" value="3" oninput="calculateDYNet()" class="w-full text-center font-bold text-slate-700 focus:outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fen (20 Soru) -->
+                <div class="p-2.5 rounded-2xl bg-pink-50/50 border border-pink-100">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <span class="font-bold text-xs text-slate-800 flex items-center gap-1">
+                            <span class="w-2 h-2 rounded-full bg-rose-300 inline-block"></span> Fen Bilimleri (20 Soru)
+                        </span>
+                        <span class="text-xs font-extrabold text-pink-600 bg-white px-2 py-0.5 rounded-lg border border-pink-200">
+                            Net: <span id="netFenText">5.50</span>
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div class="flex items-center gap-1.5 bg-white p-1.5 rounded-xl border border-pink-100">
+                            <span class="text-emerald-600 font-bold text-[11px]">D:</span>
+                            <input type="number" min="0" max="20" id="fenD" value="6" oninput="calculateDYNet()" class="w-full text-center font-bold text-slate-700 focus:outline-none">
+                        </div>
+                        <div class="flex items-center gap-1.5 bg-white p-1.5 rounded-xl border border-pink-100">
+                            <span class="text-rose-500 font-bold text-[11px]">Y:</span>
+                            <input type="number" min="0" max="20" id="fenY" value="2" oninput="calculateDYNet()" class="w-full text-center font-bold text-slate-700 focus:outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-1 flex gap-2">
+                    <button onclick="resetDYInputs()" class="w-1/3 bg-pink-50 hover:bg-pink-100 text-pink-700 font-bold py-2 rounded-2xl text-xs transition-colors">
+                        Sıfırla
+                    </button>
+                    <button onclick="calculateDYNet()" class="w-2/3 bg-gradient-to-r from-pink-500 to-rose-400 text-white font-bold py-2 rounded-2xl text-xs shadow-md shadow-pink-200 active:scale-95 transition-all">
+                        Netleri Güncelle ✨
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pedagogical Tips Card -->
+            <div class="bg-rose-50 border border-pink-200 rounded-3xl p-4 text-xs space-y-1.5">
+                <p class="font-bold text-pink-700 flex items-center gap-1">
+                    <i class="fa-solid fa-heart text-pink-500"></i> Melek İçin Tarsus Taktikleri:
+                </p>
+                <p class="text-slate-600 leading-relaxed">
+                    • <strong>Türkçe Paragraf:</strong> Her gün 20 paragraf çözmen seni tek başına Tarsus Çocuk Gelişimi eşiğine taşır.
+                </p>
+                <p class="text-slate-600 leading-relaxed">
+                    • <strong>Sosyal:</strong> Din ve Felsefe kavram sorularını kaçırmamak çok kolay +5 net kazandırır.
+                </p>
+            </div>
+        </section>
+
+        <!-- ================= TAB 3: ODAK SAYACI (POMODORO) ================= -->
+        <section id="tab-timer" class="hidden space-y-4">
+            <div class="soft-card rounded-3xl p-6 text-center app-shadow border border-pink-200/80">
+                <span class="text-xs font-bold text-pink-600 uppercase tracking-widest bg-pink-50 px-3 py-1 rounded-full border border-pink-200">
+                    Melek'in Çalışma Seansı 🌸
+                </span>
+
+                <!-- Cute Circular Timer Display -->
+                <div class="my-6 relative w-48 h-48 mx-auto flex items-center justify-center">
+                    <svg class="w-full h-full transform -rotate-90">
+                        <circle cx="96" cy="96" r="82" stroke="#fce7f3" stroke-width="12" fill="transparent" />
+                        <circle id="timerCircle" cx="96" cy="96" r="82" stroke="#f472b6" stroke-width="12" stroke-linecap="round" fill="transparent" stroke-dasharray="515" stroke-dashoffset="0" class="transition-all duration-1000" />
+                    </svg>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                        <span id="timerDisplay" class="text-4xl font-extrabold text-slate-800 tracking-tight">35:00</span>
+                        <span id="timerStatusLabel" class="text-[11px] font-semibold text-rose-400 mt-1">Odaklanma Zamanı</span>
+                    </div>
+                </div>
+
+                <!-- Timer Presets -->
+                <div class="flex justify-center gap-2 mb-6">
+                    <button onclick="setTimerMinutes(25)" class="timer-btn px-3 py-1.5 rounded-full text-xs font-bold bg-pink-50 text-pink-700 hover:bg-pink-100 transition">25 Dk</button>
+                    <button onclick="setTimerMinutes(35)" class="timer-btn px-3 py-1.5 rounded-full text-xs font-bold bg-pink-500 text-white shadow-sm transition">35 Dk</button>
+                    <button onclick="setTimerMinutes(50)" class="timer-btn px-3 py-1.5 rounded-full text-xs font-bold bg-pink-50 text-pink-700 hover:bg-pink-100 transition">50 Dk</button>
+                    <button onclick="setTimerMinutes(10)" class="timer-btn px-3 py-1.5 rounded-full text-xs font-bold bg-rose-50 text-rose-500 hover:bg-rose-100 transition">Mola</button>
+                </div>
+
+                <!-- Control Buttons -->
+                <div class="flex items-center justify-center gap-3">
+                    <button id="toggleTimerBtn" onclick="toggleTimer()" class="w-36 bg-gradient-to-r from-pink-500 to-rose-400 text-white font-extrabold py-3 rounded-2xl shadow-lg shadow-pink-200 flex items-center justify-center gap-2 active:scale-95 transition-all text-sm">
+                        <i id="timerIcon" class="fa-solid fa-play"></i>
+                        <span id="timerBtnText">Başlat</span>
+                    </button>
+                    <button onclick="resetTimer()" class="w-12 h-12 rounded-2xl bg-pink-100 hover:bg-pink-200 text-pink-700 flex items-center justify-center active:scale-95 transition-all">
+                        <i class="fa-solid fa-rotate-left"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Daily streak and quote -->
+            <div class="soft-card rounded-2xl p-4 border border-pink-100 flex items-center justify-between text-xs">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-orange-100 text-orange-500 flex items-center justify-center text-sm font-bold">
+                        🔥
+                    </div>
+                    <div>
+                        <p class="font-bold text-slate-800">Günlük Çalışma Serisi</p>
+                        <p class="text-slate-500 text-[11px]">Bugün tamamlanan: <strong>2 Seans (70 Dk)</strong></p>
+                    </div>
+                </div>
+                <span class="text-pink-600 font-bold bg-pink-50 px-2 py-1 rounded-lg">3 Gün 🔥</span>
+            </div>
+        </section>
+
+        <!-- ================= TAB 4: ÇALIŞMA PLANI ================= -->
+        <section id="tab-plan" class="hidden space-y-4">
+            <div class="soft-card rounded-3xl p-5 border border-pink-200/80">
+                <div class="flex items-center justify-between mb-3 border-b border-pink-100 pb-2">
+                    <div>
+                        <h2 class="text-sm font-bold text-slate-800">Haftalık Çocuk Gelişimi Planı</h2>
+                        <p class="text-[11px] text-pink-500 font-semibold">Tarsus Üni hedefine yönelik özel program</p>
+                    </div>
+                    <button onclick="toggleNewTaskModal()" class="w-8 h-8 rounded-full bg-pink-500 text-white flex items-center justify-center text-xs shadow-sm active:scale-95">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+
+                <!-- Daily checklist -->
+                <div id="taskList" class="space-y-2.5">
+                    <!-- Task 1 -->
+                    <div class="flex items-center justify-between p-3 rounded-2xl bg-pink-50/60 border border-pink-100">
+                        <label class="flex items-center gap-2.5 cursor-pointer text-xs">
+                            <input type="checkbox" checked class="w-4 h-4 rounded text-pink-500 focus:ring-pink-400 accent-pink-500">
+                            <div>
+                                <span class="font-bold text-slate-700 line-through text-slate-400">20 Türkçe Paragraf Sorusu</span>
+                                <span class="block text-[10px] text-pink-400">Her gün garanti net artışı</span>
+                            </div>
+                        </label>
+                        <span class="text-[10px] bg-pink-200 text-pink-800 font-bold px-2 py-0.5 rounded-full">Bitti ✨</span>
+                    </div>
+
+                    <!-- Task 2 -->
+                    <div class="flex items-center justify-between p-3 rounded-2xl bg-white border border-pink-200/70 shadow-sm">
+                        <label class="flex items-center gap-2.5 cursor-pointer text-xs">
+                            <input type="checkbox" class="w-4 h-4 rounded text-pink-500 focus:ring-pink-400 accent-pink-500">
+                            <div>
+                                <span class="font-bold text-slate-700">Temel Kavramlar & Rasyonel Sayılar</span>
+                                <span class="block text-[10px] text-slate-400">Matematik • 15 Soru Çözümü</span>
+                            </div>
+                        </label>
+                        <span class="text-[10px] bg-rose-50 text-rose-600 font-bold px-2 py-0.5 rounded-full">Sırada</span>
+                    </div>
+
+                    <!-- Task 3 -->
+                    <div class="flex items-center justify-between p-3 rounded-2xl bg-white border border-pink-200/70 shadow-sm">
+                        <label class="flex items-center gap-2.5 cursor-pointer text-xs">
+                            <input type="checkbox" class="w-4 h-4 rounded text-pink-500 focus:ring-pink-400 accent-pink-500">
+                            <div>
+                                <span class="font-bold text-slate-700">Sosyal: Tarih İlk Türk Devletleri</span>
+                                <span class="block text-[10px] text-slate-400">Konu özeti + 10 test sorusu</span>
+                            </div>
+                        </label>
+                        <span class="text-[10px] bg-rose-50 text-rose-600 font-bold px-2 py-0.5 rounded-full">Sırada</span>
+                    </div>
+
+                    <!-- Task 4 -->
+                    <div class="flex items-center justify-between p-3 rounded-2xl bg-white border border-pink-200/70 shadow-sm">
+                        <label class="flex items-center gap-2.5 cursor-pointer text-xs">
+                            <input type="checkbox" class="w-4 h-4 rounded text-pink-500 focus:ring-pink-400 accent-pink-500">
+                            <div>
+                                <span class="font-bold text-slate-700">Deneme Yanlışlarını Yapay Zekaya Sor</span>
+                                <span class="block text-[10px] text-slate-400">Kamera ile hatalı soruları tara</span>
+                            </div>
+                        </label>
+                        <span class="text-[10px] bg-pink-100 text-pink-700 font-bold px-2 py-0.5 rounded-full">Önemli 🌸</span>
+                    </div>
+                </div>
+
+                <!-- Custom program note -->
+                <div class="mt-4 pt-3 border-t border-pink-100 text-center">
+                    <p class="text-xs text-slate-500">Abinin attığı programı buraya yazarak tek tıkla listeye dönüştürebilirsin.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Bottom Navigation Bar (iOS App Style) -->
+    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-t border-pink-100 px-3 py-2 shadow-lg">
+        <div class="max-w-md mx-auto grid grid-cols-4 gap-1 text-center">
+            
+            <button onclick="switchTab('solver')" id="nav-solver" class="nav-btn flex flex-col items-center justify-center py-1 text-pink-600 transition-colors">
+                <i class="fa-solid fa-camera text-lg"></i>
+                <span class="text-[10px] font-bold mt-1">Soru Çöz</span>
+            </button>
+
+            <button onclick="switchTab('score')" id="nav-score" class="nav-btn flex flex-col items-center justify-center py-1 text-slate-400 hover:text-pink-500 transition-colors">
+                <i class="fa-solid fa-chart-pie text-lg"></i>
+                <span class="text-[10px] font-bold mt-1">Hedef & Net</span>
+            </button>
+
+            <button onclick="switchTab('timer')" id="nav-timer" class="nav-btn flex flex-col items-center justify-center py-1 text-slate-400 hover:text-pink-500 transition-colors">
+                <i class="fa-solid fa-stopwatch text-lg"></i>
+                <span class="text-[10px] font-bold mt-1">Odak Sayacı</span>
+            </button>
+
+            <button onclick="switchTab('plan')" id="nav-plan" class="nav-btn flex flex-col items-center justify-center py-1 text-slate-400 hover:text-pink-500 transition-colors">
+                <i class="fa-solid fa-list-check text-lg"></i>
+                <span class="text-[10px] font-bold mt-1">Planım</span>
+            </button>
+
+        </div>
+    </nav>
+
+    <!-- Interactive JavaScript Logic -->
+    <script>
+        // Dismiss iOS Install Banner
+        function dismissBanner() {
+            document.getElementById('iosInstallBanner').style.display = 'none';
+        }
+
+        // Gemini API Key Management
+        function toggleApiKeyModal() {
+            const modal = document.getElementById('apiKeyModal');
+            modal.classList.toggle('hidden');
+            const savedKey = localStorage.getItem('MELEK_GEMINI_API_KEY') || '';
+            document.getElementById('geminiApiKeyInput').value = savedKey;
+        }
+
+        function saveApiKey() {
+            const key = document.getElementById('geminiApiKeyInput').value.trim();
+            if (key) {
+                localStorage.setItem('MELEK_GEMINI_API_KEY', key);
+            }
+            toggleApiKeyModal();
+        }
+
+        function clearApiKey() {
+            localStorage.removeItem('MELEK_GEMINI_API_KEY');
+            document.getElementById('geminiApiKeyInput').value = '';
+            toggleApiKeyModal();
+        }
+
+        function getApiKey() {
+            return localStorage.getItem('MELEK_GEMINI_API_KEY') || '';
+        }
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            const tabs = ['solver', 'score', 'timer', 'plan'];
+            tabs.forEach(t => {
+                const sec = document.getElementById('tab-' + t);
+                const nav = document.getElementById('nav-' + t);
+                if (t === tabId) {
+                    sec.classList.remove('hidden');
+                    nav.classList.add('text-pink-600');
+                    nav.classList.remove('text-slate-400');
+                } else {
+                    sec.classList.add('hidden');
+                    nav.classList.remove('text-pink-600');
+                    nav.classList.add('text-slate-400');
+                }
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Live Gemini API Calling (Vision & Text)
+        async function callGemini(promptText, base64Image = null, mimeType = null) {
+            const apiKey = getApiKey();
+            if (!apiKey) {
+                toggleApiKeyModal();
+                throw new Error("Lütfen önce sağ üstteki anahtar simgesine basıp ücretsiz Gemini API anahtarınızı girin.");
+            }
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+            const parts = [];
+            if (base64Image && mimeType) {
+                parts.push({
+                    inlineData: {
+                        mimeType: mimeType,
+                        data: base64Image
+                    }
+                });
+            }
+            parts.push({
+                text: promptText
+            });
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: parts }],
+                    generationConfig: {
+                        temperature: 0.2
+                    }
+                })
+            });
+
+            if (!response.ok) {
+                const errData = await response.json();
+                throw new Error(errData?.error?.message || "Yapay zeka yanıt veremedi. API anahtarınızı kontrol edin.");
+            }
+
+            const data = await response.json();
+            return data?.candidates?.[0]?.content?.parts?.[0]?.text || "Çözüm üretilemedi.";
+        }
+
+        // Camera / Image Processing with Real Gemini Vision
+        async function handleImageSelected(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const fullBase64 = e.target.result;
+                const mimeType = file.type || 'image/jpeg';
+                const base64Data = fullBase64.split(',')[1];
+
+                const previewImg = document.getElementById('previewImage');
+                previewImg.src = fullBase64;
+                
+                document.getElementById('scanningContainer').classList.remove('hidden');
+                document.getElementById('solutionContainer').classList.add('hidden');
+
+                const systemPrompt = `Sen TYT/AYT sınavlarına hazırlanan ve hedefi Tarsus Üniversitesi Çocuk Gelişimi bölümü olan bir öğrencinin (adı Melek) özel öğretmenisin. 
+Bu görseldeki soruyu dikkatlice oku ve çöz.
+Formatın şu şekilde olsun:
+1. Satır: "DERS/KONU: [Örn: TYT Türkçe / Paragrafta Anlam]"
+2. Satır: "DOĞRU CEVAP: [Şık ve Kısa İfade, Örn: A Şıkkı]"
+3. Satır ve sonrası:
+- Soru Kökünün Analizi
+- Adım Adım Çözüm ve Mantık
+- Diğer şıkların neden elendiği
+- Melek için bu sorunun püf noktası ve pratik taktiği
+Açık, anlaşılır, pedagojik ve samimi bir Türkçe kullan.`;
+
+                try {
+                    const resultText = await callGemini(systemPrompt, base64Data, mimeType);
+                    
+                    // Parse subject and answer if formatted
+                    const lines = resultText.split('\n');
+                    let subject = "TYT Sorusu";
+                    let answer = "Doğru Cevap";
+
+                    lines.forEach(l => {
+                        if (l.toUpperCase().includes('DERS/KONU:')) subject = l.replace(/DERS\/KONU:/i, '').trim();
+                        if (l.toUpperCase().includes('DOĞRU CEVAP:')) answer = l.replace(/DOĞRU CEVAP:/i, '').trim();
+                    });
+
+                    document.getElementById('solutionSubjectTag').innerText = subject;
+                    document.getElementById('solutionAnswerTag').innerText = answer;
+                    document.getElementById('solutionContentArea').innerText = resultText;
+
+                    document.getElementById('scanningContainer').classList.add('hidden');
+                    document.getElementById('solutionContainer').classList.remove('hidden');
+                    document.getElementById('solutionContainer').scrollIntoView({ behavior: 'smooth' });
+                } catch (err) {
+                    document.getElementById('scanningContainer').classList.add('hidden');
+                    alert(err.message);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function solveManualText() {
+            const text = document.getElementById('manualQuestionText').value.trim();
+            if (!text) return;
+
+            document.getElementById('scanningContainer').classList.remove('hidden');
+            document.getElementById('solutionContainer').classList.add('hidden');
+
+            const systemPrompt = `Sen Melek'in TYT Çocuk Gelişimi hazırlık öğretmenisin. Aşağıdaki soruyu adım adım, açık ve doğru şıkkı belirterek çöz:
+"${text}"`;
+
+            try {
+                const resultText = await callGemini(systemPrompt);
+                document.getElementById('solutionSubjectTag').innerText = "Metin Çözümü";
+                document.getElementById('solutionAnswerTag').innerText = "Detaylı Açıklama";
+                document.getElementById('solutionContentArea').innerText = resultText;
+
+                document.getElementById('scanningContainer').classList.add('hidden');
+                document.getElementById('solutionContainer').classList.remove('hidden');
+                document.getElementById('solutionContainer').scrollIntoView({ behavior: 'smooth' });
+            } catch (err) {
+                document.getElementById('scanningContainer').classList.add('hidden');
+                alert(err.message);
+            }
+        }
+
+        function resetSolver() {
+            document.getElementById('solutionContainer').classList.add('hidden');
+            document.getElementById('scanningContainer').classList.add('hidden');
+            document.getElementById('cameraInput').value = '';
+            document.getElementById('galleryInput').value = '';
+        }
+
+        // Net Calculation & Tarsus Target Matching
+        const TARGET_NET = 55.0; // Tarsus Çocuk Gelişimi Güvenli Barajı
+
+        function calculateDYNet() {
+            // Helper function to calculate net: D - (Y / 4)
+            function getSubNet(dId, yId) {
+                const d = parseFloat(document.getElementById(dId).value) || 0;
+                const y = parseFloat(document.getElementById(yId).value) || 0;
+                const net = Math.max(0, d - (y / 4));
+                return net;
+            }
+
+            const netTurkce = getSubNet('turkceD', 'turkceY');
+            const netMat = getSubNet('matD', 'matY');
+            const netSosyal = getSubNet('sosyalD', 'sosyalY');
+            const netFen = getSubNet('fenD', 'fenY');
+
+            // Update individual net labels
+            document.getElementById('netTurkceText').innerText = netTurkce.toFixed(2);
+            document.getElementById('netMatText').innerText = netMat.toFixed(2);
+            document.getElementById('netSosyalText').innerText = netSosyal.toFixed(2);
+            document.getElementById('netFenText').innerText = netFen.toFixed(2);
+
+            const total = netTurkce + netMat + netSosyal + netFen;
+            document.getElementById('totalNetDisplay').innerText = total.toFixed(2);
+
+            // Calculate percentage
+            let percent = Math.min(100, Math.round((total / TARGET_NET) * 100));
+            document.getElementById('targetPercentDisplay').innerText = '%' + percent;
+            document.getElementById('targetProgressBar').style.width = percent + '%';
+
+            const remaining = TARGET_NET - total;
+            const remText = document.getElementById('remainingNetText');
+            if (remaining > 0) {
+                remText.innerHTML = `🎯 Hedeflenen 55 Nete sadece <strong>${remaining.toFixed(2)} Net</strong> kaldı Melek!`;
+            } else {
+                remText.innerHTML = `🎉 <strong>Harikasın Melek!</strong> Tarsus Çocuk Gelişimi için gereken 55 Net barajını aştın! 🌸`;
+            }
+        }
+
+        function resetDYInputs() {
+            ['turkceD', 'turkceY', 'matD', 'matY', 'sosyalD', 'sosyalY', 'fenD', 'fenY'].forEach(id => {
+                document.getElementById(id).value = '0';
+            });
+            calculateDYNet();
+        }
+
+        // Pomodoro Timer Logic
+        let timerSeconds = 35 * 60;
+        let totalTimerDuration = 35 * 60;
+        let timerInterval = null;
+        let isTimerRunning = false;
+
+        function setTimerMinutes(minutes) {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            updateTimerControls();
+            
+            timerSeconds = minutes * 60;
+            totalTimerDuration = timerSeconds;
+            
+            // Highlight active button
+            const buttons = document.querySelectorAll('.timer-btn');
+            buttons.forEach(btn => {
+                if (btn.innerText.includes(minutes + '')) {
+                    btn.className = "timer-btn px-3 py-1.5 rounded-full text-xs font-bold bg-pink-500 text-white shadow-sm transition";
+                } else {
+                    btn.className = "timer-btn px-3 py-1.5 rounded-full text-xs font-bold bg-pink-50 text-pink-700 hover:bg-pink-100 transition";
+                }
+            });
+
+            updateTimerDisplay();
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(timerSeconds / 60);
+            const secs = timerSeconds % 60;
+            document.getElementById('timerDisplay').innerText = 
+                `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+            // Circle animation (515 is SVG circumference)
+            const circle = document.getElementById('timerCircle');
+            const offset = 515 - (515 * (timerSeconds / totalTimerDuration));
+            circle.style.strokeDashoffset = offset;
+        }
+
+        function toggleTimer() {
+            if (isTimerRunning) {
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+            } else {
+                isTimerRunning = true;
+                timerInterval = setInterval(() => {
+                    if (timerSeconds > 0) {
+                        timerSeconds--;
+                        updateTimerDisplay();
+                    } else {
+                        clearInterval(timerInterval);
+                        isTimerRunning = false;
+                        document.getElementById('timerStatusLabel').innerText = "Tebrikler Melek! 🌸";
+                    }
+                }, 1000);
+            }
+            updateTimerControls();
+        }
+
+        function updateTimerControls() {
+            const btnText = document.getElementById('timerBtnText');
+            const icon = document.getElementById('timerIcon');
+            if (isTimerRunning) {
+                btnText.innerText = "Durdur";
+                icon.className = "fa-solid fa-pause";
+            } else {
+                btnText.innerText = "Başlat";
+                icon.className = "fa-solid fa-play";
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            timerSeconds = totalTimerDuration;
+            updateTimerDisplay();
+            updateTimerControls();
+        }
+
+        function toggleNewTaskModal() {
+            const taskText = prompt("Melek için yeni çalışma görevi ekle:");
+            if (taskText && taskText.trim() !== "") {
+                const list = document.getElementById('taskList');
+                const div = document.createElement('div');
+                div.className = "flex items-center justify-between p-3 rounded-2xl bg-white border border-pink-200/70 shadow-sm";
+                div.innerHTML = `
+                    <label class="flex items-center gap-2.5 cursor-pointer text-xs">
+                        <input type="checkbox" class="w-4 h-4 rounded text-pink-500 focus:ring-pink-400 accent-pink-500">
+                        <div>
+                            <span class="font-bold text-slate-700">${taskText.trim()}</span>
+                            <span class="block text-[10px] text-pink-400">Yeni Eklenen Görev</span>
+                        </div>
+                    </label>
+                    <span class="text-[10px] bg-pink-100 text-pink-700 font-bold px-2 py-0.5 rounded-full">Yeni 🌸</span>
+                `;
+                list.appendChild(div);
+            }
+        }
+
+        // Initialize on Load
+        window.onload = function() {
+            calculateDYNet();
+            updateTimerDisplay();
+        };
+    </script>
+</body>
+</html>
